@@ -96,7 +96,7 @@ def get_Input ( inputStr):
             #print("real", real, "imaginary", imaginary)
             complexNumber = complex(real,imaginary)
     #testing for proper complex generation
-            print(complexNumber)
+            #print(complexNumber)
             return complexNumber
             
             break
