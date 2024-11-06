@@ -1,5 +1,4 @@
 import complexInput as cO
-#Primero se pide el n. de términos al usuario
 
 #Raiz a evaluar
 root = complex(0,0)
@@ -25,6 +24,7 @@ firstLine=[]
 desarrollo=[]
 
 
+# Solicita el número de térmionos
 while True:
     try:
         nTerminos = int(input("Introduce el n de terminos: "))
@@ -39,6 +39,7 @@ while True:
 while True:
     try:
         root = cO.get_Input("Introduce la raiz a evaluar: ")
+
         break
     except :
         print("Debe introducir un número")
@@ -68,7 +69,6 @@ current = coeficientes[-1]
 for i in range(len(coeficientes)-1,0,-1):
     desarrollo.append(current*root)
     current = current*root + coeficientes[i-1]
-
     resultado.append(current)
 
 
@@ -98,67 +98,102 @@ formatOutput(thirdLine, resultado)
 
 
 #formatting the root 
+def formatRoot():
+    global raiz
+    global root
+    if root == zero:
+        raiz = '0'
+    elif root.imag ==0:
+        raiz = str(root.real)
+    elif root.real ==0: 
+        raiz = str(root.imag) + "i"
+    elif root.imag <0:
+        raiz =  str(root.real)  + str(root.imag) + "i"
+    else:
+        raiz = str(root.real) + "+" + str(root.imag) + "i"
 
-if resultado[-1] == zero:
-    raiz = '0'
-elif resultado[-1].imag ==0:
-    raiz = str(root.real)
-elif resultado[-1].real ==0: 
-    raiz = str(root.imag) + "i"
-elif resultado[-1].imag <0:
-    raiz =  str(root.real)  + str(root.imag) + "i"
-else:
-    raiz = str(root.real) + "+" + str(root.imag) + "i"
+formatRoot()
 
+def imprimir_proceso():
+    print(firstLine)
+    print(secondLine)
+    print(thirdLine)    
+imprimir_proceso()
 
-print(firstLine)
-print(secondLine)
-print(thirdLine)    
+#dar formato a numeros copmlejos individuales:
+def formatNumber(numero: complex):
+    global zero
+    nuevoNum = []
 
-if resultado[-1] == zero:
-    print(raiz, " es raíz del polinomio")
-else:
-    print(raiz +" no es raíz del polinomio")
-"""
-while True:
-    for i in firstLine:
-        print(i, end=" ")
-    print("")
-    for i in secondLine:
-        print(i, end=" ")
-    print("")
-    for i in thirdLine:
-        print(i, end=" ")
-    print("")
-    break
-formatOutput(firstLine,coeficientes,0)
-formatOutput(secondLine,secondLine,1)
-formatOutput(tercerLinea, resultado,0)
+    if numero == zero:
+        nuevoNum.append ('0')
+    elif numero.imag ==0:
+        nuevoNum.append(str(numero.real))
+    elif numero.real ==0: 
+        nuevoNum.append(str(numero.imag) + "i")
+    elif numero.imag <0:
+        nuevoNum.append( str(numero.real)  + str(numero.imag) + "i")
+    else:
+        nuevoNum.append(str(numero.real) + "+" + str(numero.imag) + "i")
+    salida= " ".join(nuevoNum)
+    return salida
 
-print(firstLine)
-print(secondLine)
-print(tercerLinea)
-    
-
-#forms the polynomial 
-def outputPolynomial(lIst):
-
-    polyStr = ''
-    for i in range(len(lIst),0,-1):
-        
-
-        if lIst[i-1] >=0:
-
-            polyStr+= (str(lIst[i-1]) + "x^" + str(i-1))
-            polyStr+= "+"
+# imprime el polinomio final
+def polinomio_Final(resultado):
+    global root
+    global zero
+    elementosPolinomioFinal = []
+    elementosRestantes = []
+    # Se encarga del primer elemento
+    elementosPolinomioFinal.append("(x")
+    root = root*-1
+    formatRoot()
+    if root.imag==0 and root.real>0 or root.real ==0 and root.imag>0:
+        elementosPolinomioFinal.append(" + ")
+    elif root == zero:
+        elementosPolinomioFinal.append(" - ")
+    elif root.real>0:
+        elementosPolinomioFinal.append(" + ")
+    elementosPolinomioFinal.append(raiz)
+    elementosPolinomioFinal.append(")")
+    # Se encarga de raices con más elemenots
+    while True:
+        if len(resultado )== 2:
+            break
         else:
-            polyStr+= (str(lIst[i-1]) + "x^" + str(i-1))
-            polyStr+="-"
+            j=0
+            for i in range(len(resultado)-2,-1,-1):
+                
+                elementosRestantes.append("(")
+                elementosRestantes.append(formatNumber(resultado[j]))
+                elementosRestantes.append(")")
+                elementosRestantes.append("x^")
+                elementosRestantes.append(str(i))
+                elementosRestantes.append(" + ")
+                j = j+1
+            elementosRestantes.pop()
+            elementosRestantes.append(")")
+            
+        break
+
+    for i in elementosRestantes :
+        elementosPolinomioFinal.append(i)
+    PolinomioFinal = "".join(elementosPolinomioFinal)
+    return PolinomioFinal        
 
 
 
-    return polyStr[:len(polyStr)-4]
-polynomial = outputPolynomial(resultado)
 
-#output
-"""
+
+
+
+def imprimir_resultado():
+    global root
+    if resultado[-1] == zero:
+        root = root*-1
+        formatRoot()
+        print(raiz, " es raíz del polinomio")
+        print(polinomio_Final(resultado))
+    else:
+        print(raiz +" no es raíz del polinomio")
+imprimir_resultado()
