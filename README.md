@@ -63,7 +63,76 @@ for i in range(nTerminos):
   
 
   #### Realizando la división sintética
-  Dado que se pide en orden reversado los coeficientes, el último elemento de la lista de coeficientes será el primer elemento de 
+  Dado que se pide en orden reversado los coeficientes, el último elemento de la lista de coeficientes será el primer elemento de la lista que refleje el resultado. Dado que tenemos que operar con los coeficientes en orden (del término de grado mayor al menor hasta llegar al independiente), iteramos al revés en la lista. Empezamos agarrando el elemento que vamos a operar (`current`). Este empieza siendo el coeficiente del término de mayor grado (índice -1 de la lista de coeficientes, mismo que se agrega al primer elemento de la lista `resultado`, la cual será el tercer renglón de la división sintética).
+
+  Comenzando con la iteración, se itera al reves en la lista de coeficientes para permitir que se opere del elemento de mayor grado al menor. A la lista `desarrollo` agregamos el elemento que estamos operando actualmente multiplicado por la raíz. El elemento actual ahora será si mismo multiplicado por la raíz, sumado al coeficiente correspondiente del polinomio original. Añadimos este elemento a la lista resultado y el ciclo se repite.
+<details>
+  <summary>
+    Código
+  </summary>
+  
+  ```
+  resultado =[]
+resultado.append(coeficientes[-1])
+#holds current third line synthetic value
+current = coeficientes[-1]
+
+
+# synthetic division
+for i in range(len(coeficientes)-1,0,-1):
+    desarrollo.append(current*root)
+    current = current*root + coeficientes[i-1]
+    resultado.append(current)
+```
+</details>
+  
+  #### Dando formato a la salida
+
+  Para la salida se imprime lo siguiente:
+  - 3 listas, cada una correspondiente al primer, segundo y tercer renglón de la división sintética
+  - Mensaje acorde a si la raíz dada si fue raíz o no del polinomio
+  - En caso de ser la raíz dada, el prorgama imprime el polinomio factorizado por la raíz
+
+    Se eligió que se imprimieran 3 listas, pues hay demasiada variedad en los decimales que pueden surgir en una fracción, haciendo la creación de strings correspondientes a los resultados cuando menos impráctico y confuso. Al imprimirlo en listas, se puede comparar más fácilmente elemento a elemento para su mejor interpretación.
+
+    Lo más importante del formato fue que hubiera una i para la parte compleja. Esto se tiene que hacer así pues la clase `complex`en python comunmente usa j para rerpresentar ala parte compleja. Para esto se creó la función `formatOutput(linea,fuente, inico=0,paso=1)`. Esto se hizo así pues la misma función sería usada para los 3 renglones de la división sintética. La función toma la lista a la que se le quiera añadir los elementos (`linea`), de donde quiere que se obtengan los elemenots dados (`fuente`) así como un indice desde el cual se iniciaría a revisar (`inicio`, que por defecto es 0, el primer elemento de la lista) así como una variable `paso`. Si su valor es -1 se iterará en la fuente al revés, de lo contrario se iterará normalmente. La necesidad de esto viene de la lista de coeficientes.
+
+     La función de `formatOutput`es tomar cada elemento de la fuente y transformarlo a una string que represente un elemento similar a `a+bi` y se añada a la lista que será la salida. Para esto se evalua si la parte real o imaginaria son 0 (para solo poner la parte real o imaginaria en caso de que solo exista una). Si la real es 0, solo se añade la imaginaria más la letra i. Si la parte imaginaria es 0 se añade la real tal como es. En caso de haber ambas y que la imaginaria sea menor a 0, se añaden las 2 tal como son a la string que será mostrada a la salida seguido de una i. De no ser así se añade el signo + en medio.
+
+<details>
+  <summary>
+        Código de `formatOutput`
+  </summary>
+
+```
+  #formatting the result list 
+thirdLine = []
+def formatOutput(linea, fuente, inicio=0,paso=1):
+    reversed=[]
+    if paso ==-1:
+        reversed  = fuente[::-1]
+    else:
+        reversed = fuente
+    
+    for i in reversed[inicio:]:
+        if i == zero:
+            linea.append("0.0")
+        elif i.imag ==0:
+            linea.append(str(i.real))
+        elif i.real ==0: 
+            linea.append(str(i.imag) + "i")
+        elif i.imag <0:
+            linea.append( str(i.real)  + str(i.imag) + "i")
+        else:
+            linea.append(str(i.real) + "+" + str(i.imag) + "i")
+formatOutput(firstLine,coeficientes,0,-1)
+formatOutput(secondLine,desarrollo,1)
+formatOutput(thirdLine, resultado)
+```
+</details>
+
+    
+
   ### Ejercicios de prueba
 
 ## Método Gauss-Jordan
