@@ -4,7 +4,6 @@
 import numpy as nump
 from fractions import Fraction
 import time
-# Función para definir los elementos
 
 def metodoMatriz():
     # Se define primero la cantidad de ecuaciones que desea el usuario
@@ -23,7 +22,7 @@ def metodoMatriz():
     for i in range(numeroElementos):
         print(f"Introduzca los coeficientes de tu ecuación (de x más elevado al independiente) {i+1} separándolos por espacios:")
         numElem = input().split()
-        ecuacionInd = [Fraction(x) for x in numElem]  # Convierte los elementos a fracciones
+        ecuacionInd = [Fraction(x) for x in numElem]  #debe de convertir los elementos a fracciones para que funcione lo de abajo "NO MOVER"
         matElem.append(ecuacionInd)
 
     # Convierte la lista en un array de Numpy con elementos de tipo fracción
@@ -37,20 +36,19 @@ def gauss_jordan_fracc(matriz, numeroElementos):
         if elementoUno == 0:
             raise ValueError("El sistema que ingresaste no tiene forma de realizarse (división por 0 = IND)")   #se usa el raise para parar el programa, usar print causa conflictos xd
         
-        matriz[i] = matriz[i] / elementoUno  # Normaliza la fila dividiendo por el elemento principal
+        matriz[i] = matriz[i] / elementoUno  #divide entre el elemento de valor 1
         
-        for j in range(numeroElementos):  # Hace ceros en los elementos fuera de la diagonal
+        for j in range(numeroElementos):  #hace 0 en los "triangulos"
             if i != j:
                 factor = matriz[j][i]
                 matriz[j] = matriz[j] - factor * matriz[i]
-    
-    solucion = matriz[:, -1]  # Toma la última columna como las soluciones
+    solucion = matriz[:, -1] 
     return solucion
 
 
 if __name__ == "__main__":
     print("Método de Gauss-Jordan V 3.2: La revancha de ValueError")
-    metodo, numeroElementos = metodoMatriz()  # Obtiene la matriz y el número de ecuaciones
+    metodo, numeroElementos = metodoMatriz() 
     
     try:
         soluciones = gauss_jordan_fracc(metodo, numeroElementos)
