@@ -99,9 +99,14 @@ for i in range(len(coeficientes)-1,0,-1):
 
      La función de `formatOutput`es tomar cada elemento de la fuente y transformarlo a una string que represente un elemento similar a `a+bi` y se añada a la lista que será la salida. Para esto se evalua si la parte real o imaginaria son 0 (para solo poner la parte real o imaginaria en caso de que solo exista una). Si la real es 0, solo se añade la imaginaria más la letra i. Si la parte imaginaria es 0 se añade la real tal como es. En caso de haber ambas y que la imaginaria sea menor a 0, se añaden las 2 tal como son a la string que será mostrada a la salida seguido de una i. De no ser así se añade el signo + en medio.
 
+Usando la mísma lógica para dar formato a números complejos se le da formato a la raíz compleja. Solo que, dado que este está almacenado como variable (`root`) y no como lista, no podemos usar `formatOutput()`. Por tanto se usa una nueva función llamada `formatRoot`la cual asigna a una variable (`raiz`) un string con el formato `a+bi` acorde a la raíz compleja
+
+En retrospectiva es muy redundante pero se creó otra funcion muy similar y redundante llamada `formatNumber`la cual le da formato a números individuales la cual se usa para imprimir el polinomio final. Para el polinomio final se usa `PolinomioFinal`la cual primero crea el factor usando la raíz con el formato apropiado. Multiplica la raíz por -1 y verifica si hay necesidad de agregar un signo más según si hay parte real o no y su signo. En caso de ser 0 agrega el signo - automáticamente. Posteriormnete se verifica si los coeficientes son 2. De ser así no reorganiza el resto del polinomio. En caso de que haya más de 2 itera (nuevamente al reves) en la lista de resultado para a cada elemento darle el formato apropiado y agregarlo, junto con x al exponente correspondiente, paréntesis y un más después de cada símbolo. Al último se elimina el último signo más, se agrega el paréntesis de cierre y se regresa el polinomio.
+
+
 <details>
   <summary>
-        Código de `formatOutput`
+        Código de formatOutput
   </summary>
 
 ```
@@ -130,8 +135,146 @@ formatOutput(secondLine,desarrollo,1)
 formatOutput(thirdLine, resultado)
 ```
 </details>
+<details>
+  <summary>
+        Código de formatRoot
+  </summary>
 
-    
+```
+#formatting the root 
+def formatRoot():
+    global raiz
+    global root
+    if root == zero:
+        raiz = '0'
+    elif root.imag ==0:
+        raiz = str(root.real)
+    elif root.real ==0: 
+        raiz = str(root.imag) + "i"
+    elif root.imag <0:
+        raiz =  str(root.real)  + str(root.imag) + "i"
+    else:
+        raiz = str(root.real) + "+" + str(root.imag) + "i"
+
+formatRoot()
+```
+</details>
+
+</details>
+<details>
+  <summary>
+        Código de formatNumber
+  </summary>
+
+```
+#dar formato a numeros copmlejos individuales:
+def formatNumber(numero: complex):
+    global zero
+    nuevoNum = []
+    if numero == zero:
+        nuevoNum.append ('0')
+    elif numero.imag ==0:
+        nuevoNum.append(str(numero.real))
+    elif numero.real ==0: 
+        nuevoNum.append(str(numero.imag) + "i")
+    elif numero.imag <0:
+        nuevoNum.append( str(numero.real)  + str(numero.imag) + "i")
+    else:
+        nuevoNum.append(str(numero.real) + "+" + str(numero.imag) + "i")
+    salida= " ".join(nuevoNum)
+    return salida
+```
+</details>
+<details>
+  <summary>
+        Código de polinomioFinal
+  </summary>
+
+```
+# imprime el polinomio final
+def polinomio_Final(resultado):
+    global root
+    global zero
+    elementosPolinomioFinal = []
+    elementosRestantes = []
+    # Se encarga del primer elemento
+    elementosPolinomioFinal.append("(x")
+    root = root*-1
+    formatRoot()
+    if root.imag==0 and root.real>0 or root.real ==0 and root.imag>0:
+        elementosPolinomioFinal.append(" + ")
+    elif root == zero:
+        elementosPolinomioFinal.append(" - ")
+    elif root.real>0:
+        elementosPolinomioFinal.append(" + ")
+    elementosPolinomioFinal.append(raiz)
+    elementosPolinomioFinal.append(")")
+    # Se encarga de raices con más elemenots
+    while True:
+        if len(resultado )== 2:
+            break
+        else:
+            j=0
+            for i in range(len(resultado)-2,-1,-1):
+                
+                elementosRestantes.append("(")
+                elementosRestantes.append(formatNumber(resultado[j]))
+                elementosRestantes.append(")")
+                elementosRestantes.append("x^")
+                elementosRestantes.append(str(i))
+                elementosRestantes.append(" + ")
+                j = j+1
+            elementosRestantes.pop()
+            elementosRestantes.append(")")
+            
+        break
+
+    for i in elementosRestantes :
+        elementosPolinomioFinal.append(i)
+    PolinomioFinal = "".join(elementosPolinomioFinal)
+    return PolinomioFinal        
+
+```
+</details>
+
+
+#### Imprimiendo salida al usuario
+Para imprimir el proceso de la división sintética usamos una función llamada `imprimir_proceso` la cual impirme las listas a las que se les dió formato antes.Posteriormente tenemos `imprimir_resultado`. De ser la raíz parte del polinomio se notifica que es raíz del polinomio y se ejecutan las funciones anteriores para hallar el polinomio factorizado e imprimirlo a la consola. De lo contrario solo informa que la raiz evaluada no era raíz del polinoomio
+
+
+<details>
+  <summary>
+        Código de imprimir_proceso 
+  </summary>
+
+```
+def imprimir_proceso():
+    print(firstLine)
+    print(secondLine)
+    print(thirdLine)    
+imprimir_proceso()
+```
+</details>
+<details>
+  <summary>
+        Código de imprimir_proceso 
+  </summary>
+
+```
+
+def imprimir_resultado():
+    global root
+    if resultado[-1] == zero:
+        root = root*-1
+        formatRoot()
+        print(raiz, " es raíz del polinomio")
+        print(polinomio_Final(resultado))
+    else:
+        print(raiz +" no es raíz del polinomio")
+imprimir_resultado()
+```
+</details>
+
 
   ### Ejercicios de prueba
 
@@ -152,6 +295,18 @@ formatOutput(thirdLine, resultado)
   Puede escribirse solo la parte real como si fuera un número normal o como fracción, poniendo una diagonal entre el numerador y denominador. Puede escribirse solo la parte imaginaria añadiendo i después del número, de nuevo pudiendo poner fracciones. De tener parte real e imaginaria se deben de escribir primero la parte real, seguido de la parte imaginaria. No debe de incluir espacios y seguido de la parte iamginaria debe de colocarse la letra i.
 
   ### Explicación del código
+  Todo número complejo se puede expresar de la forma `a+bi`. Se verifica que no hayan los siguientes errores al introducir los datos, para los cuales hay mensajes de error específicos. 
+  -  Espacios
+  -  Más operadores (+,-) de los que debería de haber
+  -  Carácteres irregulares
+  -  Múltiples diagonales o puntos decimales
+  -  Presencia de la i
+Para lo primero se busca que el caracter espacio no esté en la lista formada por cada elemento de la string de entrada dada por el usuario. Para los signos se reconoce que, en el peor de los casos el primer caracter debe de ser un signo, por tanto no debe de haber más de un signo después del primer caracter; razón por la cual se revisa desde el segundo caracter
+
+Para los caracteres irregulares, se interpretan como regulares los siguientes caracteres: 0,1,2,3,4,5,6,7,8,9,i,/,+,-,. No debería de haber ninguno otro al expresar un complejo, por tanto si hay caracteres que no sean esos se levanta una excepción. Se cuenta nuevamente que el conteo total de puntos decimales y diagonales no supere a 2 (en ningun motivo deberían ser más de 2). 
+
+Posteriormente para la correcta separación de símbolos se verifica si el primer caracter es algún signo. De no serlo es positivo por tanto se añade un signo +. Posteriormente se verifica si hay más de un signo. De ser así se itera desde el caracter de indice 1 hata el final a buscar el segundo símbolo, a partir del cual se separará la lista que contenga los elemenots reales y los imaginarios. 
+
 
 
 ## Conclusiones
