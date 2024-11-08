@@ -6,17 +6,12 @@ import numpy as nump
 
 from fractions import Fraction
 
-#Funcion para definir los elementos y 
+#Funcion para definir los elementos
 
 def metodoMatriz():
     #se define primero la cantidad de ecuaciones que desea el usuario
     numelemto = int(input("Ingrese el numero de ecuaciones a realizar y cantidad de variables: "))
     matElem=[]
-    if numElem == 0:
-       for n in range(10):
-        n = 10
-        print(f"El sistema operativo se eliminara en {i-1}")  
-        raise ValueError("no se pueden meter 0 ecuaciones")
     
     for i in range(numelemto):
      print(f"Introduzca los coeficientes de tu ecuacion (del x mas elevado al independiente) {i+1} separandolos por espacios")
@@ -28,7 +23,8 @@ def metodoMatriz():
     #momento de hacer que jale con fracciones (inspiracion divina ven a mi)
     #la funcion np ayudara a hacer que el array de "matElem" puedra trabajar con elementos de fracion si a/b
     matElem_np = nump.array(matElem, dtype=object)
-    return matElem_np, n
+    numElem = numeroElemento
+    return matElem_np, numeroElemento
 
 def gauss_jordan_fracc(matriz, n):
    for i in range(n):
@@ -47,10 +43,10 @@ def gauss_jordan_fracc(matriz, n):
 
 if __name__ == "__main__":
     print("Metodo chido de division de gauss jordan V 3.2 la revancha de raise errorvalue")
-    metodo, n = metodoMatriz()
+    metodo, numeroElemento = metodoMatriz()
     
     try:
-       soluciones = gauss_jordan_fracc(metodo, n)
+       soluciones = gauss_jordan_fracc(metodo, numeroElemento)
        print("\n La solucion a su sitema es: ")
        for i, solus in enumerate(soluciones): #enumera las soluciones que se encuentran
             print(f"x del conjunto {i+1} es {solus}")
