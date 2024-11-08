@@ -1,54 +1,61 @@
-# metodo de gaus jordan alv
-
+# Método de Gauss-Jordan para resolver un sistema de ecuaciones lineales V 3.3 
 #se usa para calcular los valores de un sistema de ecuaciones de "n x m" dimensiones
 
 import numpy as nump
-
 from fractions import Fraction
-
-#Funcion para definir los elementos
+import time
+# Función para definir los elementos
 
 def metodoMatriz():
-    #se define primero la cantidad de ecuaciones que desea el usuario
-    numelemto = int(input("Ingrese el numero de ecuaciones a realizar y cantidad de variables: "))
-    matElem=[]
+    # Se define primero la cantidad de ecuaciones que desea el usuario
+    numeroElementos = int(input("Ingrese el número de ecuaciones a realizar y cantidad de variables: "))
+    matElem = []
+
+    if numeroElementos == 0: #Bromita 
+        print("El numero de ecuaciones no puede ser 0... iniciando desinstalacion de windows")
+        for i in range(5, 0, -1):
+            print(f"{i}...")
+            time.sleep(1)
+        raise ValueError("No puede haber ecuaciones con 0... afortunadamente no teniamos polvora")
     
-    for i in range(numelemto):
-     print(f"Introduzca los coeficientes de tu ecuacion (del x mas elevado al independiente) {i+1} separandolos por espacios")
-     numElem = input().split()
+    matElem = []
 
-     ecuacionInd = [Fraction(x) for x in numElem] #debe de convertir los elementos a fracciones para que funcione lo de abajo "NO MOVER"
-     matElem.append(ecuacionInd)
+    for i in range(numeroElementos):
+        print(f"Introduzca los coeficientes de tu ecuación (de x más elevado al independiente) {i+1} separándolos por espacios:")
+        numElem = input().split()
+        ecuacionInd = [Fraction(x) for x in numElem]  # Convierte los elementos a fracciones
+        matElem.append(ecuacionInd)
 
-    #momento de hacer que jale con fracciones (inspiracion divina ven a mi)
-    #la funcion np ayudara a hacer que el array de "matElem" puedra trabajar con elementos de fracion si a/b
+    # Convierte la lista en un array de Numpy con elementos de tipo fracción
+    # la funcion np ayudara a hacer que el array de "matElem" puedra trabajar con elementos de fracion si a/b
     matElem_np = nump.array(matElem, dtype=object)
-    numElem = numeroElemento
-    return matElem_np, numeroElemento
+    return matElem_np, numeroElementos  # Devuelve la matriz y el número de ecuaciones
 
-def gauss_jordan_fracc(matriz, n):
-   for i in range(n):
-      elementoUno = matriz[i][i]
-      if elementoUno == 0:
-         raise ValueError("el sistema que ingresaste no tiene forma de ralizarse a/0 = IND") #se usa el raise para parar el programa, usar print causa conflictos xd
-      
-      matriz[i] = matriz[i] / elementoUno #divide entre el elemento de valor 1
-      
-      for j in range(n): #hace 0 en los "triangulos"
-         if i != j:
-            factor = matriz[i][j] 
-            matriz[j] = matriz[j] - factor * matriz[i]
-            solucion = matriz[:, -1]
-   return solucion
+def gauss_jordan_fracc(matriz, numeroElementos):
+    for i in range(numeroElementos):
+        elementoUno = matriz[i][i]
+        if elementoUno == 0:
+            raise ValueError("El sistema que ingresaste no tiene forma de realizarse (división por 0 = IND)")   #se usa el raise para parar el programa, usar print causa conflictos xd
+        
+        matriz[i] = matriz[i] / elementoUno  # Normaliza la fila dividiendo por el elemento principal
+        
+        for j in range(numeroElementos):  # Hace ceros en los elementos fuera de la diagonal
+            if i != j:
+                factor = matriz[j][i]
+                matriz[j] = matriz[j] - factor * matriz[i]
+    
+    solucion = matriz[:, -1]  # Toma la última columna como las soluciones
+    return solucion
+
 
 if __name__ == "__main__":
-    print("Metodo chido de division de gauss jordan V 3.2 la revancha de raise errorvalue")
-    metodo, numeroElemento = metodoMatriz()
+    print("Método de Gauss-Jordan V 3.2: La revancha de ValueError")
+    metodo, numeroElementos = metodoMatriz()  # Obtiene la matriz y el número de ecuaciones
     
     try:
-       soluciones = gauss_jordan_fracc(metodo, numeroElemento)
-       print("\n La solucion a su sitema es: ")
-       for i, solus in enumerate(soluciones): #enumera las soluciones que se encuentran
+        soluciones = gauss_jordan_fracc(metodo, numeroElementos)
+        print("\nLa solución a su sistema es:")
+        for i, solus in enumerate(soluciones):  # Enumera las soluciones y las imprime
             print(f"x del conjunto {i+1} es {solus}")
     except ValueError as f:
-       print(f"Error en {f}")
+        print(f"Error: {f}")
